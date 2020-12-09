@@ -28,10 +28,3 @@ Then sign using...
 jarsigner Pacman.jar alias
 (You have to set up jarsigner!)
 
-
-=======================================
-09.12 - N.Stricker:
-=======================================
-- Ant Build-Script added
-- to execute the program just type "ant"/ "ant run"
-

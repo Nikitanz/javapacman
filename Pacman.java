@@ -64,25 +64,6 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
     b.requestFocus();
   }
 
-  /* This repaint function repaints only the parts of the screen that may have changed.
-     Namely the area around every player ghost and the menu bars
-  */
-  public void repaint()
-  {
-    if (b.player.teleport)
-    {
-      b.repaint(b.player.lastX-20,b.player.lastY-20,80,80);
-      b.player.teleport=false;
-    }
-    b.repaint(0,0,600,20);
-    b.repaint(0,420,600,40);
-    b.repaint(b.player.x-20,b.player.y-20,80,80);
-    b.repaint(b.ghost1.x-20,b.ghost1.y-20,80,80);
-    b.repaint(b.ghost2.x-20,b.ghost2.y-20,80,80);
-    b.repaint(b.ghost3.x-20,b.ghost3.y-20,80,80);
-    b.repaint(b.ghost4.x-20,b.ghost4.y-20,80,80);
-  }
-
   /* Steps the screen forward one frame */
   public void stepFrame(boolean New)
   {
@@ -101,7 +82,7 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
     }
 
     /* New can either be specified by the New parameter in stepFrame function call or by the state
-       of b.New.  Update New accordingly */ 
+       of b.New.  Update New accordingly */
     New = New || (b.New !=0) ;
 
     /* If this is the title screen, make sure to only stay on the title screen for 5 seconds.
@@ -123,7 +104,7 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
       b.repaint();
       return;
     }
- 
+
     /* If this is the win screen or game over screen, make sure to only stay on the screen for 5 seconds.
        If after 5 seconds the user hasn't pressed a key, go to title screen */
     else if (b.winScreen || b.overScreen)
@@ -161,10 +142,10 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
       }
 
       /* Also move the ghosts, and update the pellet states */
-      b.ghost1.move(); 
-      b.ghost2.move(); 
-      b.ghost3.move(); 
-      b.ghost4.move(); 
+      b.ghost1.move();
+      b.ghost2.move();
+      b.ghost3.move();
+      b.ghost4.move();
       b.player.updatePellet();
       b.ghost1.updatePellet();
       b.ghost2.updatePellet();
@@ -186,9 +167,9 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
       }
 
       /* Move all game elements back to starting positions and orientations */
-      b.player.currDirection='L';
-      b.player.direction='L';
-      b.player.desiredDirection='L';
+      b.player.currDirection= new DirectionLeft();
+      b.player.direction= new DirectionLeft();
+      b.player.desiredDirection= new DirectionLeft();
       b.player.x = 200;
       b.player.y = 300;
       b.ghost1.x = 180;
@@ -210,12 +191,12 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
     /* Otherwise we're in a normal state, advance one frame*/
     else
     {
-      repaint(); 
+      b.repaintChanges();
     }
-  }  
+  }
 
   /* Handles user key presses*/
-  public void keyPressed(KeyEvent e) 
+  public void keyPressed(KeyEvent e)
   {
     /* Pressing a key in the title screen starts a game */
     if (b.titleScreen)
@@ -241,26 +222,24 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
       return;
     }
 
-    /* Otherwise, key presses control the player! */ 
+    /* Otherwise, key presses control the player! */
     switch(e.getKeyCode())
     {
       case KeyEvent.VK_LEFT:
-       b.player.desiredDirection='L';
-       break;     
+       b.player.desiredDirection= new DirectionLeft();
+       break;
       case KeyEvent.VK_RIGHT:
-       b.player.desiredDirection='R';
-       break;     
+       b.player.desiredDirection= new DirectionRight();
+       break;
       case KeyEvent.VK_UP:
-       b.player.desiredDirection='U';
-       break;     
+       b.player.desiredDirection= new DirectionUp();
+       break;
       case KeyEvent.VK_DOWN:
-       b.player.desiredDirection='D';
-       break;     
+       b.player.desiredDirection= new DirectionDown();
+       break;
     }
-
-    repaint();
+    b.repaintChanges();
   }
-
   /* This function detects user clicks on the menu items on the bottom of the screen */
   public void mousePressed(MouseEvent e){
     if (b.titleScreen || b.winScreen || b.overScreen)
@@ -282,7 +261,7 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
       else if (180 <= x && x <= 300)
       {
         /* Clear high scores has been clicked */
-        b.clearHighScores();
+        b.highscore.clearHighScores();
       }
       else if (350 <= x && x <= 420)
       {
@@ -291,8 +270,7 @@ public class Pacman extends JApplet implements MouseListener, KeyListener
       }
     }
   }
-  
- 
+
   public void mouseEntered(MouseEvent e){}
   public void mouseExited(MouseEvent e){}
   public void mouseReleased(MouseEvent e){}

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="javapacman" default="run" basedir=".">
+
+    <property name="buildPath" value="${basedir}/build"/>
+    <property name="srcPath" value="${basedir}"/>
+	<property name="soundPath" value="${basedir}/sounds"/>
+	<property name="imgPath" value="${basedir}/img"/>
+	
+
+	<target name="srcPath-check">
+		<condition property="srcPath.exists">
+			<available file="${srcPath}" type="dir"/>
+		</condition>
+	</target>
+	
+	<target name="clean-generated-java-files" depends="srcPath-check" if="srcPath.exists">
+		<delete dir="${buildPath}" />
+		<echo message="Cleaned generated Java files"/>
+	</target>
+	
+	<target name="buildPath-check">
+		<condition property="buildPath.exists">
+			<available file="${buildPath}" type="dir"/>
+		</condition>
+	</target>
+	
+    <target name="clean-classes" depends="buildPath-check" if="buildPath.exists">
+        <delete>
+            <fileset dir="${buildPath}" includes="**/*.class"/>
+        </delete>
+		<echo message="Cleaned class files"/>
+    </target>
+
+	<target name="clean" depends="clean-generated-java-files, clean-classes"/>
+	
+
+    <target name="compile" depends="clean">
+        <mkdir dir="${buildPath}"/>
+        <javac srcdir="${srcPath}" destdir="${buildPath}" includeantruntime="false">
+        </javac>
+		<copy todir="${buildPath}/sounds" >  
+			<fileset dir="${soundPath}" includes="**"/>  
+		</copy> 
+		<copy todir="${buildPath}/img" >  
+			<fileset dir="${imgPath}" includes="**"/>  
+		</copy> 
+    </target>
+
+    <target name="run" description="Run" depends="compile">
+        <java classname="Pacman" fork="true">
+            <classpath>
+                <pathelement path="${buildPath}"/>
+				<fileset dir="${soundPath}" includes="*.wav"/>
+				<fileset dir="${imgPath}" includes="*.jpg"/>
+            </classpath>
+        </java>
+    </target>
+</project>
